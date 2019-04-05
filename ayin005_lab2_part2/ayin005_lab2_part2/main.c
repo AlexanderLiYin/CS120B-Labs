@@ -23,23 +23,23 @@ int main(void)
 		tmpA1 = PINA & 0x02;
 		// 2) Perform computation
 		// if PA0 is 1, set PB1PB0 = 01, else = 10
-		if (tmpA == 0x00) { 
+		if ((tmpA0 == 0x00) && (tmpA1 == 0x00)) { 
 			tmpC = (tmpC & 0xFC) | 0x04; // Sets tmpB to bbbbbb01
 		}
 		
-		else if (tmpA == 0x01) {
+		else if ((tmpA0 == 0x00) && (tmpA1 == 0x01)) {
 			tmpC = (tmpC & 0xFC) | 0x03;
 		}
 		
-		else if (tmpA == 0x02) {
+		else if ((tmpA0 == 0x01) && (tmpA1 == 0x00)) {
 			tmpC = (tmpC & 0xFC) | 0x02;
 		}
 		
-		else if (tmpA == 0x01) {
-			tmpC = (tmpC & 0xFC) | 0x03;
+		else if ((tmpA0 == 0x01) && (tmpA1 == 0x01)) {
+			tmpC = (tmpC & 0xFC) | 0x01;
 		}
 		
-		else if (tmpA == 0x00) {
+		else {
 			tmpC = (tmpC & 0xFC) | 0x04;
 		}
 		
