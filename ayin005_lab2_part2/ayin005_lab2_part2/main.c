@@ -10,42 +10,40 @@
 int main(void)
 {
 	DDRA = 0x00; PORTA = 0xFF; // Configure port A's 8 pins as inputs
-	DDRB = 0xFF; PORTB = 0x00; // Configure port B's 8 pins as outputs, initialize to 0s
+	DDRC = 0xFF; PORTC = 0x00; // Configure port B's 8 pins as outputs, initialize to 0s
 	
-	unsigned char tmpB = 0x00; // Temporary variable to hold the value of B
-	unsigned char tmpA0 = 0x00; // Temporary variable to hold the value of A0
-	unsigned char tmpA1 = 0x00; // Temporary variable to hold the value of A1
-	unsigned char tmpA2 = 0x00; // Temporary variable to hold the value of A2
-	unsigned char tmpA3 = 0x00; // Temporary variable to hold the value of A3
-	unsigned char cntavail = 0x04; //Temp variable used to store number available
+	unsigned char tmpA = 0x00; // Temporary variable to hold the value of A0
+
+	unsigned char cntavail = 0x00; //Temp variable used to store number available
 	
 	
 	while(1)
 	{
 		// 1) Read input
-		tmpA0 = PINA & 0x01;
-		tmpA1 = PINA & 0x02;
-		tmpA2 = PINA & 0x03;
-		tmpA3 = PINA & 0x04;
+		tmpA = PINA;
 		// 2) Perform computation
 		// if PA0 is 1, set PB1PB0 = 01, else = 10
-		if (tmpA0 == 0x01) { 
-			cntavail++;
-		}
-
-		if (tmpA1 == 0x01) {
-			cntavail++;
+		if (tmpA == 0x00) { 
+			cntavail = (cntavail & 0xFC) | 0x04; // Sets tmpB to bbbbbb01
 		}
 		
-		if (tmpA2 == 0x01) {
-			cntavail++;
+		else if (tmpA == 0x01) {
+			cntavail = (cntavail & 0xFC) | 0x03;
 		}
 		
-		if (tmpA3 == 0x01) {
-			cntavail++;
+		else if (tmpA == 0x02) {
+			cntavail = (cntavail & 0xFC) | 0x02;
 		}
+		
+		else if (tmpA == 0x01) {
+			cntavail = (cntavail & 0xFC) | 0x03;
+		}
+		
+		else if (tmpA == 0x00) {
+			cntavail = (cntavail & 0xFC) | 0x04;
+		}
+		
 		// 3) Write output
-		PORTB = tmpB;
 		PORTC = cntavail; //Assign Port C a number to show how much available 
 	}
 	return 0;
