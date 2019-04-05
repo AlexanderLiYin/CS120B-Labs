@@ -15,32 +15,32 @@ int main(void)
 	DDRC = 0x00; PORTC = 0xFF; // Configure port B's 8 pins as inputs
 	DDRD = 0xFF; PORTD = 0x00; // Configure port D's 8 pins as outputs, initialize to 0s
 	
-	unsigned char tmpA0 = 0x00; // Temporary variable to hold the value of A0
-	unsigned char tmpA1 = 0x00; // Temporary variable to hold the value of A1
-	unsigned char tmpA2 = 0x00; // Temporary variable to hold the value of A2
-	unsigned char tmpA3 = 0x00; // Temporary variable to hold the value of A3
-	unsigned char tmpA4 = 0x00; // Temporary variable to hold the value of A4
-	unsigned char tmpA5 = 0x00; // Temporary variable to hold the value of A5
-	unsigned char tmpA6 = 0x00; // Temporary variable to hold the value of A6
-	unsigned char tmpA7 = 0x00; // Temporary variable to hold the value of A7
+	int tmpA0 = 0x00; // Temporary variable to hold the value of A0
+	int tmpA1 = 0x00; // Temporary variable to hold the value of A1
+	int tmpA2 = 0x00; // Temporary variable to hold the value of A2
+	int tmpA3 = 0x00; // Temporary variable to hold the value of A3
+	int tmpA4 = 0x00; // Temporary variable to hold the value of A4
+	int tmpA5 = 0x00; // Temporary variable to hold the value of A5
+	int tmpA6 = 0x00; // Temporary variable to hold the value of A6
+	int tmpA7 = 0x00; // Temporary variable to hold the value of A7
 	
-	unsigned char tmpB0 = 0x00; // Temporary variable to hold the value of B0
-	unsigned char tmpB1 = 0x00; // Temporary variable to hold the value of B1
-	unsigned char tmpB2 = 0x00; // Temporary variable to hold the value of B2
-	unsigned char tmpB3 = 0x00; // Temporary variable to hold the value of B3
-	unsigned char tmpB4 = 0x00; // Temporary variable to hold the value of B4
-	unsigned char tmpB5 = 0x00; // Temporary variable to hold the value of B5
-	unsigned char tmpB6 = 0x00; // Temporary variable to hold the value of B6
-	unsigned char tmpB7 = 0x00; // Temporary variable to hold the value of B7
+	int tmpB0 = 0x00; // Temporary variable to hold the value of B0
+	int tmpB1 = 0x00; // Temporary variable to hold the value of B1
+	int tmpB2 = 0x00; // Temporary variable to hold the value of B2
+	int tmpB3 = 0x00; // Temporary variable to hold the value of B3
+	int tmpB4 = 0x00; // Temporary variable to hold the value of B4
+	int tmpB5 = 0x00; // Temporary variable to hold the value of B5
+	int tmpB6 = 0x00; // Temporary variable to hold the value of B6
+	int tmpB7 = 0x00; // Temporary variable to hold the value of B7
 	
-	unsigned char tmpC0 = 0x00; // Temporary variable to hold the value of C0
-	unsigned char tmpC1 = 0x00; // Temporary variable to hold the value of C1
-	unsigned char tmpC2 = 0x00; // Temporary variable to hold the value of C2
-	unsigned char tmpC3 = 0x00; // Temporary variable to hold the value of C3
-	unsigned char tmpC4 = 0x00; // Temporary variable to hold the value of C4
-	unsigned char tmpC5 = 0x00; // Temporary variable to hold the value of C5
-	unsigned char tmpC6 = 0x00; // Temporary variable to hold the value of C6
-	unsigned char tmpC7 = 0x00; // Temporary variable to hold the value of C7
+	int tmpC0 = 0x00; // Temporary variable to hold the value of C0
+	int tmpC1 = 0x00; // Temporary variable to hold the value of C1
+	int tmpC2 = 0x00; // Temporary variable to hold the value of C2
+	int tmpC3 = 0x00; // Temporary variable to hold the value of C3
+	int tmpC4 = 0x00; // Temporary variable to hold the value of C4
+	int tmpC5 = 0x00; // Temporary variable to hold the value of C5
+	int tmpC6 = 0x00; // Temporary variable to hold the value of C6
+	int tmpC7 = 0x00; // Temporary variable to hold the value of C7
 	
 	while(1)
 	{
@@ -80,31 +80,14 @@ int main(void)
 		
 		// 2) Perform computation
 		// if PA0 is 1, set PB1PB0 = 01, else = 10
-		if (tmpA0 == 0x01) { // True if PA0 is 1 and PA1 is 0
-			cntavail = cntavail + 1;
+		if (totalWeight > 0xFF) {
+			PORTD = 0x01;
 		}
-		
-		if (tmpA1 == 0x02) { // True if PA0 is 1 and PA1 is 0
-			cntavail = cntavail + 1;
+		if ((weightDifference > 0x50) || (weightDifference < -0x50)) { // True if PA0 is 1 and PA1 is 0
+			PORTD = 0x02;
 		}
-		
-		if (tmpA2 == 0x04) { // True if PA0 is 1 and PA1 is 0
-			cntavail = cntavail + 1;
+		if ((totalWeight > 0xFF) && ((weightDifference > 0x50) || (weightDifference < -0x50))) {
+			PORTD = 0x03;
 		}
-		
-		if (tmpA3 == 0x08) { // True if PA0 is 1 and PA1 is 0
-			cntavail = cntavail + 1;
-		}
-
-		// 3) Write output
-		if (cntavail == 4)
-		{
-			PORTC = 128;
-		}
-		else
-		{
-			PORTC = 4 - cntavail;
-		}
-		
 	}
 }
