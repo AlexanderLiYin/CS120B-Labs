@@ -40,7 +40,7 @@ int main(void)
 		}
 		
 		else {
-			tmpC = (tmpC & 0xFC) | 0x04;
+			tmpC = (tmpC & 0xFC) | 0x00;
 		}
 		
 		// 3) Write output
