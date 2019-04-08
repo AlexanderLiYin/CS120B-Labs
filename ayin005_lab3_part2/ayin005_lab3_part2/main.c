@@ -17,6 +17,9 @@ int main(void)
 	unsigned char button1 = 0x00;
 	unsigned char button2 = 0x00;
 	unsigned char button3 = 0x00;
+	unsigned char button4 = 0x00;
+	unsigned char button5 = 0x00;
+	unsigned char button6 = 0x00;
 	
 	while(1)
 	{
@@ -25,6 +28,9 @@ int main(void)
 		button1 = PINA & 0x02; // Mask PINA to only get the bit you are interested in
 		button2 = PINA & 0x04; // Mask PINA to only get the bit you are interested in
 		button3 = PINA & 0x08; // Mask PINA to only get the bit you are interested in
+		button4 = PINA & 0x10; // Mask PINA to only get the bit you are interested in
+		button5 = PINA & 0x20; // Mask PINA to only get the bit you are interested in
+		button6 = PINA & 0x40; // Mask PINA to only get the bit you are interested in
 		
 		int fuel = 0;
 		
