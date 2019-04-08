@@ -33,6 +33,7 @@ int main(void)
 		button6 = PINA & 0x40; // Mask PINA to only get the bit you are interested in
 		
 		int fuel = 0;
+		int light = 0;
 		
 		// 2) Perform Computation
 		if (button0 == 0x01) { // True if PA0 is 1
@@ -48,34 +49,38 @@ int main(void)
 			fuel = fuel + 8;
 		}
 		
+		if ((button4 == 0x10) && (button5 == 0x20) && (button6 != 0x40)) { // True if PA3 is 1
+			light = light + 128;
+		}
 		// 3) write results to port
 		if (fuel <= 0)
 		{
-			PORTC = 64;
+			light = light + 64;
 		}
 		if ((fuel > 0) && (fuel <= 2))
 		{
-			PORTC = 96;
+			light = light + 96;
 		}
 		if ((fuel >= 3) && (fuel <= 4))
 		{
-			PORTC = 112;
+			light = light + 112;
 		}
 		if ((fuel >= 5) && (fuel <= 6))
 		{
-			PORTC = 56;
+			light = light + 56;
 		}
 		if ((fuel >= 7) && (fuel <= 9))
 		{
-			PORTC = 60;
+			light = light + 60;
 		}
 		if ((fuel >= 10) && (fuel <= 12))
 		{
-			PORTC = 62;
+			light = light + 62;
 		}
 		if ((fuel >= 13) && (fuel <= 15))
 		{
-			PORTC = 63;
+			light = light + 63;
 		}
+		PORTC = light;
 	}
 }
