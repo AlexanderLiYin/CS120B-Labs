@@ -21,19 +21,22 @@ int main(void)
 	DDRB = 0xFF; PORTB = 0x00; // Configure port B's 8 pins as inputs
 	// initialize to 0s
 	unsigned char button0 = 0x00;
+	int temp = 0;
 	
 	while(1)
 	{
 		// 1) Read Inputs and assign to variables
 		button0 = PINA & 0x01; // Mask PINA to only get the bit you are interested in
 		
-		button0 == 0x01;
-		int count = 0;
 		// 2) Perform Computation
-		if (button0 == 0x01) { // True if PA0 is 1
-			count = count + 1;
+		if ((button0 == 0x01) && (temp == 0)) { // True if PA0 is 1
+			PORTB = 2;
+			temp = 1;
 		}
-		// 3) write results to port
-		PORTC = count;
+		else if ((button0 == 0x00) && (temp == 1))
+		{
+			PORTB = 1;
+			temp = 0;
+		}
 	}
 }
