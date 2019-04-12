@@ -20,23 +20,37 @@ int main(void)
 	DDRA = 0x00; PORTA = 0xFF; // Configure port A's 8 pins as inputs
 	DDRB = 0xFF; PORTB = 0x00; // Configure port B's 8 pins as inputs
 	// initialize to 0s
-	unsigned char button0 = 0x00;
+	int state = 0;
+	int counter = 0;
 	int temp = 0;
-	
 	while(1)
 	{
-		// 1) Read Inputs and assign to variables
-		button0 = PINA & 0x01; // Mask PINA to only get the bit you are interested in
-		
-		// 2) Perform Computation
-		if ((button0 == 0x01) && (temp == 0)) { // True if PA0 is 1
-			PORTB = 2;
-			temp = 1;
-		}
-		else if ((button0 == 0x00) && (temp == 1))
+		state = PINA & 1;
+		switch(state)
 		{
-			PORTB = 1;
-			temp = 0;
+		case 0:
+			if (temp != 1)
+			{
+				PORTB = 0x01;
+				counter = 0;
+			}
+			else
+			{
+				counter = 1;
+			}
+			break;
+		case 1:
+
+				PORTB = 0x02;
+				if (counter != 1)
+				{
+					temp = 1;
+				}
+				else 
+				{
+					temp = 0;
+				}
+		break;
 		}
 	}
 }
