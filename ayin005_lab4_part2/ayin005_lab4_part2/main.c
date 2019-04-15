@@ -27,6 +27,7 @@ int main(void)
 	int value=7;
 	int button0;
 	int button1;
+	int check=0;
 	while(1)
 	{
 		int button0 = PINA & 0x01;
@@ -35,26 +36,50 @@ int main(void)
 		{
 			case base:
 			PORTC = value;
-			if (button0 == 0x01)
+			
+			if((button0 == 0x01) && (button1 == 0x02))
+			{
+				value = 0;
+				PORTC = value;
+				break;
+			}
+			if ((button0 == 0x01) && (value != 9))
 			{
 				machine = increment;
+				check = 1;
 			};
-			if (button1 == 0x02)
+			if ((button1 == 0x02) && (value != 0))
 			{
 				machine = decrement;
+				check = 1;
 			}
 			break;
 		
 			case increment:
-			value = value + 1;
+			if (check == 1)
+			{
+				value = value + 1;
+				check=0;
+			}
+			
 			PORTC = value;
-			machine = base;
+			if (button0 != 0x01)
+			{
+				machine = base;
+			}
 			break;
 			
 			case decrement:
-			value = value + 1;
+			if (check == 1)
+			{
+				value = value - 1;
+				check=0;
+			}
 			PORTC = value;
-			machine = base;
+			if (button1 != 0x02)
+			{
+				machine = base;
+			}
 			break;
 		}
 	}
