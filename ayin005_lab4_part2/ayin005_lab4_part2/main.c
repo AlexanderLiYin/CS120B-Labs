@@ -15,21 +15,47 @@ unsigned char GetBit(unsigned char x, unsigned char k) { //x is the button. K is
 	return ((x & (0x01 << k)) != 0);
 }
 
+
 int main(void)
 {
 	DDRA = 0x00; PORTA = 0xFF; // Configure port A's 8 pins as inputs
 	DDRC = 0xFF; PORTC = 0x00; // Configure port C's 8 pins as outputs
 	// initialize to 0s
+	PORTC = 0x07; //Port C is initialized to 7.
+	enum state {base, increment, decrement};
+	enum state machine;
+	int value=7;
+	int button0;
+	int button1;
 	while(1)
 	{
-		int temp = PORTC;
-		if ((PORTA == 0x01) && (PORTA < 10))
+		int button0 = PINA & 0x01;
+		int button1 = PINA & 0x02;
+		switch(machine)
 		{
-			PORTC = temp + 1;
-		}
-		if ((PORTA == 0x02) && (PORTA > 0))
-		{
-			PORTC = temp -1;
+			case base:
+			PORTC = value;
+			if (button0 == 0x01)
+			{
+				machine = increment;
+			};
+			if (button1 == 0x02)
+			{
+				machine = decrement;
+			}
+			break;
+		
+			case increment:
+			value = value + 1;
+			PORTC = value;
+			machine = base;
+			break;
+			
+			case decrement:
+			value = value + 1;
+			PORTC = value;
+			machine = base;
+			break;
 		}
 	}
 }
