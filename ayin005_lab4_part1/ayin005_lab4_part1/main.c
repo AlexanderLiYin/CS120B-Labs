@@ -25,7 +25,7 @@ int main(void)
 	int temp = 0;
 	while(1)
 	{
-		state = PINA & 1;
+		state = PINA & 0x01;
 		switch(state)
 		{
 		case 0:
@@ -49,6 +49,7 @@ int main(void)
 				else 
 				{
 					temp = 0;
+					PORTB =0x01;
 				}
 		break;
 		}
