@@ -19,65 +19,63 @@ unsigned char GetBit(unsigned char x, unsigned char k) { //x is the button. K is
 int main(void)
 {
 	DDRA = 0x00; PORTA = 0xFF; // Configure port A's 8 pins as inputs
-	DDRC = 0xFF; PORTC = 0x00; // Configure port C's 8 pins as outputs
+	DDRB = 0xFF; PORTB = 0x00; // Configure port C's 8 pins as outputs
 	// initialize to 0s
-	PORTC = 0x07; //Port C is initialized to 7.
-	enum state {base, increment, decrement};
+	PORTC = 0x00; //Port C is initialized to 7.
+	enum state {base, lock, lock2, unlock};
 	enum state machine;
-	int value=7;
-	int button0;
-	int button1;
-	int check=0;
+	int value = 1;
+	int buttonX;
+	int buttonY;
+	int buttonHash;
+	int buttonIn;
+	
 	while(1)
 	{
-		int button0 = PINA & 0x01;
-		int button1 = PINA & 0x02;
+		buttonX = PINA & 0x01;
+		buttonY = PINA & 0x02;
+		buttonHash = PINA & 0x04;
+		buttonIn = PINA & 0x80;
 		switch(machine)
 		{
 			case base:
 			PORTC = value;
 			
-			if((button0 == 0x01) && (button1 == 0x02))
+			if ((buttonHash == 0x04) && ((buttonY != 0x02) || (buttonX != 0x01)))
 			{
-				value = 0;
-				PORTC = value;
-				break;
-			}
-			if ((button0 == 0x01) && (value != 9))
-			{
-				machine = increment;
-				check = 1;
+				machine = lock;
 			};
-			if ((button1 == 0x02) && (value != 0))
-			{
-				machine = decrement;
-				check = 1;
-			}
+			
 			break;
 			
-			case increment:
-			if (check == 1)
+			case lock:
+			if ((buttonX != 0x01) && ((buttonY!=0x02) || (buttonHash != 0x04)))
 			{
-				value = value + 1;
-				check=0;
+				machine = lock2;
 			}
-			
-			PORTC = value;
-			if (button0 != 0x01)
+			else if((buttonY==0x02) || (buttonHash == 0x04))
 			{
 				machine = base;
 			}
 			break;
 			
-			case decrement:
-			if (check == 1)
+			case lock2:
+			if (buttonY == 0x02 && ((buttonX != 0x01) || (buttonHash != 0x04)))
 			{
-				value = value - 1;
-				check=0;
+				PORTB = value;
+				machine = unlock;
 			}
-			PORTC = value;
-			if (button1 != 0x02)
+			else if ((buttonX == 0x01) || (buttonHash == 0x04))
 			{
+				machine = base;
+			}
+			
+			break;
+			
+			case unlock:
+			if (buttonIn==0x80)
+			{
+				PORTB = 0;
 				machine = base;
 			}
 			break;
