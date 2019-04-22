@@ -1,8 +1,8 @@
 /*
- * ayin005_lab6_part1.c
+ * ayin005_lab6_part2.c
  *
- * Created: 4/22/2019 10:41:30 AM
- * Author : ucrcse
+ * Created: 4/22/2019 3:27:10 PM
+ * Author : shado
  */ 
 
 #include <avr/io.h>
@@ -66,26 +66,66 @@ void TimerSet(unsigned long M) {
 
 void main()
 {
+	DDRA = 0x00;
+	PORTA = 0xFF;
 	DDRB = 0xFF; // Set port B to output
 	PORTB = 0x00; // Init port B to 0s
-	TimerSet(1000);
+	TimerSet(300);
 	TimerOn();
 	unsigned char tmpB = 0x00;
+	unsigned char button = ~PINA & 0x01;
+	unsigned char count = 0;
 	while(1) {
 		// User code (i.e. synchSM calls)
 		tmpB = 0x01;
 		PORTB = tmpB;
-		while (!TimerFlag);	// Wait 1 sec
+		while (!TimerFlag)	// Wait 1 sec
+		{
+			if ((button == 0x01) && (count == 0))
+			{
+				TimerOff();
+				count = 1;
+			}
+			if ((button == 0x01) && (count == 1))
+			{
+				TimerOn();
+				count = 0;
+			}
+		}
 		TimerFlag = 0;
 		
 		tmpB = 0x02;
 		PORTB = tmpB;
-		while (!TimerFlag);	// Wait 1 sec
+		while (!TimerFlag)	// Wait 1 sec
+		{
+			if ((button == 0x01) && (count == 0))
+			{
+				TimerOff();
+				count = 1;
+			}
+			if ((button == 0x01) && (count == 1))
+			{
+				TimerOn();
+				count = 0;
+			}
+		}
 		TimerFlag = 0;
 		
 		tmpB = 0x04;
 		PORTB = tmpB;
-		while (!TimerFlag);	// Wait 1 sec
+		while (!TimerFlag)	// Wait 1 sec
+		{
+			if ((button == 0x01) && (count == 0))
+			{
+				TimerOff();
+				count = 1;
+			}
+			if ((button == 0x01) && (count == 1))
+			{
+				TimerOn();
+				count = 0;
+			}
+		}
 		TimerFlag = 0;
 		// Note: For the above a better style would use a synchSM with TickSM()
 		// This example just illustrates the use of the ISR and flag
