@@ -11,7 +11,7 @@
 int main(void)
 {
 	DDRA = 0x00; PORTA = 0xFF; // Configure port A's 8 pins as inputs
-	DDRC = 0xFF; PORTC = 0x00; // Configure port C's 8 pins as outputs,
+	DDRB = 0xFF; PORTB = 0x00; // Configure port C's 8 pins as outputs,
 	// initialize to 0s
 	unsigned char button0 = 0x00;
 	unsigned char button1 = 0x00;
@@ -24,13 +24,13 @@ int main(void)
 	while(1)
 	{
 		// 1) Read Inputs and assign to variables
-		button0 = PINA & 0x01; // Mask PINA to only get the bit you are interested in
-		button1 = PINA & 0x02; // Mask PINA to only get the bit you are interested in
-		button2 = PINA & 0x04; // Mask PINA to only get the bit you are interested in
-		button3 = PINA & 0x08; // Mask PINA to only get the bit you are interested in
-		button4 = PINA & 0x10; // Mask PINA to only get the bit you are interested in
-		button5 = PINA & 0x20; // Mask PINA to only get the bit you are interested in
-		button6 = PINA & 0x40; // Mask PINA to only get the bit you are interested in
+		button0 = ~PINA & 0x01; // Mask PINA to only get the bit you are interested in
+		button1 = ~PINA & 0x02; // Mask PINA to only get the bit you are interested in
+		button2 = ~PINA & 0x04; // Mask PINA to only get the bit you are interested in
+		button3 = ~PINA & 0x08; // Mask PINA to only get the bit you are interested in
+		button4 = ~PINA & 0x10; // Mask PINA to only get the bit you are interested in
+		button5 = ~PINA & 0x20; // Mask PINA to only get the bit you are interested in
+		button6 = ~PINA & 0x40; // Mask PINA to only get the bit you are interested in
 		
 		int fuel = 0;
 		int light = 0;
@@ -81,6 +81,6 @@ int main(void)
 		{
 			light = light + 63;
 		}
-		PORTC = light;
+		PORTB = light;
 	}
 }
