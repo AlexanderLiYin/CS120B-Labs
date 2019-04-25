@@ -74,20 +74,33 @@ int main(void)
 	unsigned char button0 = ~PINA & 0x01;
 	unsigned char button1 = ~PINA & 0x02;
 	unsigned char display = 0x00;
-	
+	unsigned char count = 0;
 	// Initializes the LCD display
 	LCD_init();
+	while (1)
+	{
+		while (!TimerFlag)	// Wait 1 sec
+		{
+			if ((button0 == 0x01) && (count == 0))
+			{
+				display = display + 1;
+				count = 1;
+			}
+			if ((button1 == 0x02) && (count == 0))
+			{
+				display = display - 1;
+				count = 1;
+			}
+		}
+		TimerFlag = 0;
+		LCD_DisplayString(1, display + '0');
+		count = 0;
+		if(button0 && button1)
+		{
+			display = 0;
+		}
+	}
 	
-	if (button0)
-	{
-		display = display + 1;
-	}
-	if (button1)
-	{
-		display = display - 1;
-	}
 	// Starting at position 1 on the LCD screen, writes Hello World
-	LCD_DisplayString(1, "Hello World");
 	
-	while(1) {continue;}
 }
