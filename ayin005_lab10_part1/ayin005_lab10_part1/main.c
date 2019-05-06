@@ -49,9 +49,50 @@ void PWM_off() {
 
 int main(void)
 {
-    /* Replace with your application code */
+	enum pitchs {C,D,E} pitch;
+	DDRA=0x00; PORTA=0xFF;
+	DDRB=0xFF; PORTB=0x00;
+	
+	unsigned char button0;
+	unsigned char button2;
+	unsigned char button4;
+	
+	PWM_on();
+    
     while (1) 
     {
+		button0	= PINA & 0x01;
+		button2 = PINA & 0x04;
+		button4 = PINA & 0x40;
+		
+		if (button0)
+		{
+			pitch=C;
+		}
+		else if(button2)
+		{
+			pitch=D;
+		}
+		else if(button4)
+		{
+			pitch=E;
+		}
+		
+		switch (pitch)
+		{
+		case C:
+			set_PWM(261.63);
+			break;
+		case D:
+			set_PWM(293.66);
+			break;
+		case E:
+			set_PWM(329.63);
+			break;
+		default:
+		set_PWM(0);
+		break;
+		}
     }
 }
 
