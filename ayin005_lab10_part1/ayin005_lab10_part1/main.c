@@ -73,11 +73,24 @@ void main()
 	unsigned char tmpB = 0x00;
 	while(1) {
 		// User code (i.e. synchSM calls)
-		PORTB = 0x01;
+		
+		PORTB = 0x09;
 		while (!TimerFlag);	// Wait 1 sec
 		TimerFlag = 0;
 		
 		PORTB = 0x02;
+		while (!TimerFlag);	// Wait 1 sec
+		TimerFlag = 0;
+		
+		PORTB = 0x0C;
+		while (!TimerFlag);	// Wait 1 sec
+		TimerFlag = 0;
+		
+		PORTB = 0x01;
+		while (!TimerFlag);	// Wait 1 sec
+		TimerFlag = 0;
+		
+		PORTB = 0x0A;
 		while (!TimerFlag);	// Wait 1 sec
 		TimerFlag = 0;
 		
