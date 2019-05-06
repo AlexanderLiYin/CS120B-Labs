@@ -73,8 +73,15 @@ void main()
 	unsigned char tmpB = 0x00;
 	while(1) {
 		// User code (i.e. synchSM calls)
-		tmpB = ~tmpB;	// Toggle PORTB; Temporary, bad programming style
-		PORTB = tmpB;
+		PORTB = 0x01;
+		while (!TimerFlag);	// Wait 1 sec
+		TimerFlag = 0;
+		
+		PORTB = 0x02;
+		while (!TimerFlag);	// Wait 1 sec
+		TimerFlag = 0;
+		
+		PORTB = 0x04;
 		while (!TimerFlag);	// Wait 1 sec
 		TimerFlag = 0;
 		// Note: For the above a better style would use a synchSM with TickSM()
