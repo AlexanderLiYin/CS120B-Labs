@@ -64,40 +64,36 @@ void TimerSet(unsigned long M) {
 	_avr_timer_cntcurr = _avr_timer_M;
 }
 
+	enum TL_States {TL_SMStart, TL_Seq0, TL_Seq1, TL_Seq2} TL_State;
+	enum BL_States {BL_SMStart, BL_LEDOff, BL_LEDOn} BL_State;
+	void BlinkLED_Tick();
+	void ThreeLED_Tick();
 void main()
 {
+	unsigned long BL_elapsedTime = 0;
+	unsigned long TL_elapsedTime = 0;
+	const unsigned long timerPeriod = 500;
+	TimerSet(timerPeriod);
+	TimerOn();
 	DDRB = 0xFF; // Set port B to output
 	PORTB = 0x00; // Init port B to 0s
-	TimerSet(1000);
-	TimerOn();
-	unsigned char tmpB = 0x00;
+	
+	BL_State=BL_SMStart;
+	TL_State=TL_SMStart;
 	while(1) {
-		// User code (i.e. synchSM calls)
-		
-		PORTB = 0x09;
-		while (!TimerFlag);	// Wait 1 sec
-		TimerFlag = 0;
-		
-		PORTB = 0x02;
-		while (!TimerFlag);	// Wait 1 sec
-		TimerFlag = 0;
-		
-		PORTB = 0x0C;
-		while (!TimerFlag);	// Wait 1 sec
-		TimerFlag = 0;
-		
-		PORTB = 0x01;
-		while (!TimerFlag);	// Wait 1 sec
-		TimerFlag = 0;
-		
-		PORTB = 0x0A;
-		while (!TimerFlag);	// Wait 1 sec
-		TimerFlag = 0;
-		
-		PORTB = 0x04;
-		while (!TimerFlag);	// Wait 1 sec
-		TimerFlag = 0;
-		// Note: For the above a better style would use a synchSM with TickSM()
-		// This example just illustrates the use of the ISR and flag
+		if (TL_elapsedTime>=1000)
+		{
+			ThreeLED_Tick();
+			TL_elapsedTime=0;
+		}
+		if (BL_elapsedTime >= 1500)
+		{
+			BlinkLED_Tick();
+			BL_elapsedTime=0;
+		}
+		while(!TimerFlag);
+		TimerFlag=0;
+		BL_elapsedTime += 500;
+		TL_elapsedTime += 500;
 	}
 }
