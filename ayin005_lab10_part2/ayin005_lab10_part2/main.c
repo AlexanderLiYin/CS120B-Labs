@@ -93,7 +93,7 @@ void main()
 		}
 		while(!TimerFlag);
 		TimerFlag=0;
-		BL_elapsedTime += 500;
-		TL_elapsedTime += 500;
+		BL_elapsedTime += timerPeriod;
+		TL_elapsedTime += timerPeriod;
 	}
 }
