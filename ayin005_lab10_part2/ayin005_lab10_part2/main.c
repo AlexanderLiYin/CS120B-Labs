@@ -64,29 +64,89 @@ void TimerSet(unsigned long M) {
 	_avr_timer_cntcurr = _avr_timer_M;
 }
 
-	enum TL_States {TL_SMStart, TL_Seq0, TL_Seq1, TL_Seq2} TL_State;
-	enum BL_States {BL_SMStart, BL_LEDOff, BL_LEDOn} BL_State;
-	void BlinkLED_Tick();
-	void ThreeLED_Tick();
+unsigned char SetBit(unsigned char x, unsigned char k, unsigned char b) {
+	return (b ? x | (0x01 << k) : x & ~(0x01 << k));
+}
+unsigned char GetBit(unsigned char x, unsigned char k) { //x is the button. K is 0 or 1
+	return ((x & (0x01 << k)) != 0);
+}
+
+unsigned char temp=0;
+enum TL_States {TL_SMStart, TL_Seq0, TL_Seq1, TL_Seq2} TL_State;
+enum BL_States {BL_SMStart, BL_LEDOff, BL_LEDOn} BL_State;
+void BlinkLED_Tick()
+{
+		switch (BL_State)
+		{
+			case BL_SMStart:
+			BL_State=BL_LEDOn;
+			break;
+			
+			case BL_LEDOn:
+			temp=SetBit(temp, 3, 1);
+			PORTB=temp;
+			BL_State=BL_LEDOff;
+			break;
+			
+			case BL_LEDOff:
+			temp=SetBit(temp, 3, 0);
+			PORTB=temp;
+			BL_State=BL_LEDOn;
+			break;
+		}
+}
+
+void ThreeLED_Tick()
+{
+	switch(TL_State)
+	{
+		case TL_SMStart:
+		TL_State=TL_Seq0;
+		break;
+		
+		case TL_Seq0:
+		temp=SetBit(temp,2,0);
+		temp=SetBit(temp,0,1);
+		PORTB=temp;
+		TL_State=TL_Seq1;
+		break;
+		
+		case TL_Seq1:
+		temp=SetBit(temp,0,0);
+		temp=SetBit(temp,1,1);
+		PORTB=temp;
+		TL_State=TL_Seq2;
+		break;
+		
+		case TL_Seq2:
+		temp=SetBit(temp,1,0);
+		temp=SetBit(temp,2,1);
+		PORTB=temp;
+		TL_State=TL_Seq0;
+		break;
+	}
+}
+	
 void main()
 {
-	unsigned long BL_elapsedTime = 0;
-	unsigned long TL_elapsedTime = 0;
-	const unsigned long timerPeriod = 500;
-	TimerSet(timerPeriod);
-	TimerOn();
 	DDRB = 0xFF; // Set port B to output
 	PORTB = 0x00; // Init port B to 0s
+	unsigned long BL_elapsedTime = 0;
+	unsigned long TL_elapsedTime = 0;
+	const unsigned long timerPeriod = 100;
+	TimerSet(timerPeriod);
+	TimerOn();
+	
 	
 	BL_State=BL_SMStart;
 	TL_State=TL_SMStart;
 	while(1) {
-		if (TL_elapsedTime>=1000)
+		if (TL_elapsedTime>=300)
 		{
 			ThreeLED_Tick();
 			TL_elapsedTime=0;
 		}
-		if (BL_elapsedTime >= 1500)
+		if (BL_elapsedTime >= 1000)
 		{
 			BlinkLED_Tick();
 			BL_elapsedTime=0;
