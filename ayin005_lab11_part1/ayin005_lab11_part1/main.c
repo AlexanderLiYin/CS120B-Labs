@@ -6,7 +6,8 @@
  */ 
 
 #include <avr/io.h>
-#include <io.h>
+#include <ucr/bit.h>
+#include "io.h"
 
 // Returns '\0' if no key pressed, else returns char '1', '2', ... '9', 'A', ...
 // If multiple keys pressed, returns leftmost-topmost one
