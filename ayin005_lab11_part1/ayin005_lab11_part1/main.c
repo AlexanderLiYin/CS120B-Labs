@@ -8,6 +8,9 @@
 #include <avr/io.h>
 #include "keypad.h"
 #include "timer.h"
+#include "io.h"
+#include "io.c"
+#include "lcd_8bit_task.h"
 
 //--------Find GCD function --------------------------------------------------
 unsigned long int findGCD(unsigned long int a, unsigned long int b)
@@ -248,8 +251,14 @@ int main(void)
 	TimerSet(GCD);
 	TimerOn();
 
-
+	//Turn on LCD
+	LCD_init();
+	
 	while(1) {
+		LCD_WriteData(9+0);
+
+
+
 		x = GetKeypadKey();
 		switch (x) {
 			case '\0': PORTB = 0x1F; break; // All 5 LEDs on
@@ -264,5 +273,6 @@ int main(void)
 			case '#': PORTB = 0x0F; break;
 			default: PORTB = 0x1B; break; // Should never occur. Middle LED off.
 		}
+		
 	}
 }
