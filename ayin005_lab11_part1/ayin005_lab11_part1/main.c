@@ -8,9 +8,8 @@
 #include <avr/io.h>
 #include "keypad.h"
 #include "timer.h"
-#include "io.h"
 #include "io.c"
-#include "lcd_8bit_task.h"
+//#include "lcd_8bit_task.h"
 
 //--------Find GCD function --------------------------------------------------
 unsigned long int findGCD(unsigned long int a, unsigned long int b)
@@ -198,7 +197,8 @@ int main(void)
 {
 	unsigned char x;
 	DDRB = 0xFF; PORTB = 0x00; // PORTB set to output, outputs init 0s
-	DDRC = 0xF0; PORTC = 0x0F; // PC7..4 outputs init 0s, PC3..0 inputs init 1s
+	DDRC = 0xFF; PORTC = 0x00; // PC7..4 outputs init 0s, PC3..0 inputs init 1s
+	DDRD = 0xFF; PORTD = 0x00; //Port D set as output
 	
 	unsigned long int SMTick1_calc = 50;
 	unsigned long int SMTick2_calc = 500;
@@ -253,12 +253,13 @@ int main(void)
 
 	//Turn on LCD
 	LCD_init();
-	
+	LCD_Cursor('10');
+	const unsigned char * word = "Hello World";
 	while(1) {
-		LCD_WriteData(9+0);
+		LCD_DisplayString(1, "Hello World");
 
 
-
+/*
 		x = GetKeypadKey();
 		switch (x) {
 			case '\0': PORTB = 0x1F; break; // All 5 LEDs on
@@ -273,6 +274,7 @@ int main(void)
 			case '#': PORTB = 0x0F; break;
 			default: PORTB = 0x1B; break; // Should never occur. Middle LED off.
 		}
+		*/
 		
 	}
 }
