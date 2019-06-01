@@ -6,7 +6,14 @@
  */ 
 
 #include <avr/io.h>
-#include <avr/interrupt.h>
+#include "timer.h" //used for timer
+#include "io.h" //used for LCD
+#include "stack.h" //stack functions
+//#include "seven_seg.h" //code for seven segment display
+#include "queue.h" //code for a queue
+#include "bit.h" //code for set and get bit
+#include "keypad.h" //code for the keypad
+#include <avr/eeprom.h>
 
 volatile unsigned char TimerFlag = 0; // TimerISR() sets this to 1. C programmer should clear to 0.
 

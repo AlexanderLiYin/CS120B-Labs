@@ -13,6 +13,7 @@
 #include "queue.h" //code for a queue
 #include "bit.h" //code for set and get bit
 #include "keypad.h" //code for the keypad
+#include <avr/eeprom.h>
 
 unsigned char temp=0;
 enum TL_States {TL_SMStart, TL_Seq0, TL_Seq1, TL_Seq2} TL_State;
