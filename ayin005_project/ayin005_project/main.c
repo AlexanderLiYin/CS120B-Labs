@@ -96,10 +96,17 @@ void ThreeLED_Tick()
 
 void main()
 {
-	DDRA = 0x00; // Set port B to output
-	PORTA = 0xFF; // Init port B to 0s
+	DDRA = 0x00; // Set port A to input
+	PORTA = 0xFF;
+	
 	DDRB = 0xFF; // Set port B to output
 	PORTB = 0x00; // Init port B to 0s
+	
+	DDRC = 0xF0; // Set port C to output
+	PORTC = 0x0F; // Init port C to 0s
+	
+	DDRD = 0xFF;  
+	PORTD = 0x00; 
 	
 	unsigned long BL_elapsedTime = 0;
 	unsigned long TL_elapsedTime = 0;
