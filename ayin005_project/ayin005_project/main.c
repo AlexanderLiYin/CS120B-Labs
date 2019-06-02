@@ -111,6 +111,7 @@ void main()
 	unsigned long BL_elapsedTime = 0;
 	unsigned long TL_elapsedTime = 0;
 	unsigned long SP_elapsedTime = 0;
+	unsigned char tmpA0;
 	unsigned char tmpA1;
 	
 	const unsigned long timerPeriod = 2;
@@ -121,6 +122,7 @@ void main()
 	TL_State=TL_SMStart;
 	SP_State=SP_SMStart;
 	while(1) {
+		/*
 		if (TL_elapsedTime>=300)
 		{
 			ThreeLED_Tick();
@@ -131,12 +133,22 @@ void main()
 			BlinkLED_Tick();
 			BL_elapsedTime=0;
 		}
+		*/
+		tmpA0 = PINA & 0x01;
 		tmpA1 = PINA & 0x02;
-		if ((tmpA1 != 0x02) && (SP_elapsedTime >= 2))
+		
+		if ((tmpA0 < 0) && (SP_elapsedTime >= 300))
 		{
 			Speaker_Tick();
 			SP_elapsedTime=0;
 		}
+		
+		if ((tmpA1 != 0x02) && (SP_elapsedTime >= 300))
+		{
+			Speaker_Tick();
+			SP_elapsedTime=0;
+		}
+		
 		while(!TimerFlag);
 		TimerFlag=0;
 		BL_elapsedTime += timerPeriod;
