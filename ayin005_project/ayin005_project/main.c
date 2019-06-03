@@ -19,6 +19,9 @@ unsigned char temp=0;
 enum TL_States {TL_SMStart, TL_Seq0, TL_Seq1, TL_Seq2} TL_State;
 enum BL_States {BL_SMStart, BL_LEDOff, BL_LEDOn} BL_State;
 enum SP_States {SP_SMStart, SP_Off, SP_On} SP_State;
+	
+enum DS_States {DS_Start, DS_S1, DS_2} DS_State;
+	
 void BlinkLED_Tick()
 {
 	switch (BL_State)
@@ -94,6 +97,24 @@ void ThreeLED_Tick()
 	}
 }
 
+void DispaySong()
+{
+	switch(DS_State)
+	{
+		case DS_Start:
+		TL_State=TL_Seq0;
+		break;
+		
+		case DS_S1:
+		TL_State=DS_Start;
+		break;
+		
+		case DS_2:
+		TL_State=DS_Start;
+		break;
+	}
+}
+
 void main()
 {
 	DDRA = 0x00; // Set port A to input
@@ -137,13 +158,13 @@ void main()
 		tmpA0 = PINA & 0x01;
 		tmpA1 = PINA & 0x02;
 		
-		if ((tmpA0 < 0) && (SP_elapsedTime >= 300))
+		if ((tmpA0 != 0x01) && (SP_elapsedTime >= 300))
 		{
 			Speaker_Tick();
 			SP_elapsedTime=0;
 		}
 		
-		if ((tmpA1 != 0x02) && (SP_elapsedTime >= 300))
+		if ((tmpA1 != 0x02) && (SP_elapsedTime >= 1))
 		{
 			Speaker_Tick();
 			SP_elapsedTime=0;
