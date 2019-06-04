@@ -24,27 +24,15 @@ void ADC_init() {
 	//        the previous conversion completes.
 }
 
-uint16_t ReadADC(uint8_t ch)
-{
-	//Select ADC Channel ch must be 0-7
-	ch=ch&0b00000111;
-	ADMUX|=ch;
-
-	//Start Single conversion
-	ADCSRA|=(1<<ADSC);
-
-	//Wait for conversion to complete
-	while(!(ADCSRA & (1<<ADIF)));
-
-	//Clear ADIF by writing one to it
-	//Note you may be wondering why we have write one to clear it
-	//This is standard way of clearing bits in io as said in datasheets.
-	//The code writes '1' but it result in setting bit to '0' !!!
-
-	ADCSRA|=(1<<ADIF);
-
-	return(ADC);
+//Selects input on PORTA for A2D conversion
+//default is A0
+void Set_A2D_Pin(unsigned char pinNum) {
+	ADMUX = (pinNum <= 0x07) ? pinNum : ADMUX;
+	// Allow channel to stabilize
+	static unsigned char i = 0;
+	for ( i=0; i<15; i++ ) { asm("nop"); }
 }
+
 
 unsigned char temp=0;
 enum TL_States {TL_SMStart, TL_Seq0, TL_Seq1, TL_Seq2} TL_State;
@@ -183,6 +171,26 @@ void Speaker_Tick()
 	}
 }
 
+#define ADC_PRECISION 10
+#define TS_PRECISION  6     //thumb stick bit precisio
+
+//returns ADC value of thumb stick at pinNum
+unsigned char getThumbStickVal(unsigned char pinNum){
+	Set_A2D_Pin(pinNum);
+	unsigned char tsTruncate = ADC_PRECISION - TS_PRECISION;
+	static unsigned char i;
+	for(i = 0; i < 24; i++) asm("nop");
+	unsigned char thumbStickVal = ADC >> tsTruncate;
+	return thumbStickVal;
+}
+
+unsigned char rightH, rightV, leftH, leftV;
+
+#define RIGHTH  0
+#define RIGHTV  1
+#define LEFTH   2
+#define LEFTV   3
+
 void main()
 {
 	DDRA = 0x00; // Set port A to input
@@ -204,11 +212,9 @@ void main()
 	unsigned long TL_elapsedTime = 0;
 	unsigned long SP_elapsedTime = 0;
 	
-	unsigned char tmpA0;
-	unsigned char tmpA1;
-	unsigned char tmpA2;
-	
-	uint16_t adc_result;
+	unsigned short tmpA0;
+	unsigned short tmpA1;
+	unsigned short tmpA2;
 	
 	const unsigned long timerPeriod = 2;
 	TimerSet(timerPeriod);
@@ -230,18 +236,24 @@ void main()
 			BL_elapsedTime=0;
 		}
 		*/
-		adc_result = ReadADC(0);
-		tmpA0 = ReadADC(0);
+		tmpA0 = PINA & 0x01;
 		tmpA1 = PINA & 0x02;
 		tmpA2 = PINA & 0x04;
 		
-		if ((adc_result<5) /*&& (SP_elapsedTime >= 1)*/)
+		/*
+		rightH = getThumbStickVal(RIGHTH);
+		rightV = getThumbStickVal(RIGHTV);
+		leftH  = getThumbStickVal(LEFTH);
+		leftV  = getThumbStickVal(LEFTV);
+		*/
+		
+		if ((tmpA0==0) /*&& (SP_elapsedTime >= 1)*/)
 		{
 			PORTB=1;
 			//Speaker_Tick();
-			SP_elapsedTime=0;
+			//SP_elapsedTime=0;
 		}
-		else
+		else if (tmpA1==0)
 		{
 			PORTB=0;
 		}
